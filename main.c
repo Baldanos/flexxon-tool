@@ -45,23 +45,34 @@ void do_unlock(int fd)
 	leave_cmd2();
 }
 
+void do_password(int fd)
+{
+	printf("Fetching password...\r\n");
+	enter_cmd2();
+	read_single_block(fd, 0x6980, buf);
+	leave_cmd2();
+	printf("Password: %s", &buf[0x10a]);
+}
+
 int main(int argc, char **argv)
 {
 	const char *device = NULL;
 	int do_lock_flag = 0;
 	int do_unlock_flag = 0;
+	int do_password_flag = 0;
 
 	static struct option long_opts[] = {
 		{"device", required_argument, 0, 'd'},
 		{"lock",   no_argument,       0, 'l'},
 		{"unlock", no_argument,       0, 'u'},
+		{"password", no_argument,     0, 'p'},
 		{0, 0, 0, 0}
 	};
 
 	int opt;
 	int opt_index = 0;
 
-	while ((opt = getopt_long(argc, argv, "d:lu", long_opts, &opt_index)) != -1) {
+	while ((opt = getopt_long(argc, argv, "d:lup", long_opts, &opt_index)) != -1) {
 		switch (opt) {
 		case 'd':
 			device = optarg;
@@ -71,6 +82,9 @@ int main(int argc, char **argv)
 			break;
 		case 'u':
 			do_unlock_flag = 1;
+			break;
+		case 'p':
+			do_password_flag = 1;
 			break;
 		default:
 			fprintf(stderr, "Usage: %s --device <dev> [--lock | --unlock]\n", argv[0]);
@@ -89,8 +103,8 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	if (!do_lock_flag && !do_unlock_flag) {
-		fprintf(stderr, "Error: either --lock or --unlock must be specified\n");
+	if (!do_lock_flag && !do_unlock_flag && !do_password_flag) {
+		fprintf(stderr, "Error: either --lock, --unlock or --password must be specified\n");
 		return 1;
 	}
 
@@ -106,6 +120,8 @@ int main(int argc, char **argv)
 		do_lock(fd);
 	else if (do_unlock_flag)
 		do_unlock(fd);
+	else if (do_password_flag)
+		do_password(fd);
 
 	close(fd);
 	return 0;

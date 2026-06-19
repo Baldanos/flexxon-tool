@@ -3,8 +3,6 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "debug.h"
-
 static void bytes2bits(const uint8_t *data, size_t len, char *out, size_t *out_len)
 {
 	size_t pos = 0;

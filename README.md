@@ -1,6 +1,7 @@
 # Linux Flexxon tool
 
 This tool allows you to use Flexxon [X-mask](https://www.flexxon.com/x-mask/)
+and [X-mask PRO](https://www.flexxon.com/x-mask-pro-microsd-card/)
 on Linux systems.
 
 ## Warning
@@ -29,6 +30,14 @@ make
 
 ```
 ./flexxon-tool --device /dev/mmcblk0 --lock
+```
+
+## Show card password
+
+Note: This only works on X-mask, not the PRO
+
+```
+./flexxon-tool --device /dev/mmcblk0 --password
 ```
 
 # AI disclaimer
